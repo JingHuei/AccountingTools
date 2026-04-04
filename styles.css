@@ -1,81 +1,156 @@
-:root{
-  --pink:#ffe4ec;
-  --blue:#e6f0ff;
-  --purple:#f3e6ff;
-  --yellow:#fff8d6;
-  --text:#333;
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #fff;
+  color: #333;
 }
 
-body{
-  margin:0;
-  font-family: "Noto Sans TC", sans-serif;
-  background: linear-gradient(135deg,var(--pink),var(--blue));
+/* 容器與版面設定 */
+.header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 16px;
+  background: #fff5f8;
 }
 
-/* HEADER */
-.header{
-  display:flex;
-  justify-content:space-between;
-  padding:10px 20px;
+.header button {
+  margin-left: 8px;
+  padding: 8px 16px;
+  background: #555;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-button{
-  background:#333;
-  color:#fff;
-  border:none;
-  padding:8px 12px;
-  border-radius:10px;
-  cursor:pointer;
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 95%;
+  max-width: 1200px;
+  margin: 16px auto;
 }
 
-/* GRID */
-.container{
-  display:grid;
-  gap:15px;
-  padding:15px;
+.card {
+  background: #f8f0f4;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 8px 0;
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.card{
-  background:#fff;
-  border-radius:20px;
-  padding:15px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+/* 各卡片主題色 */
+#add-entry-card {
+  background: #ffd6e8;
 }
 
-/* MOBILE FIRST */
-@media(min-width:768px){
-  .container{
-    grid-template-columns:1fr 1fr;
+#summary-card {
+  background: #e3f2fd;
+}
+
+#credit-card {
+  background: #ede7f6;
+}
+
+#details-card {
+  background: #fff8e1;
+}
+
+/* RWD 斷點：桌面版兩欄 */
+@media (min-width: 768px) {
+  .container {
+    display: grid;
+    grid-template-areas:
+      "add summary"
+      "add credit"
+      "details details";
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: auto;
+  }
+
+  #add-entry-card {
+    grid-area: add;
+  }
+
+  #summary-card {
+    grid-area: summary;
+  }
+
+  #credit-card {
+    grid-area: credit;
+  }
+
+  #details-card {
+    grid-area: details;
+  }
+
+  .card {
+    margin: 12px;
   }
 }
 
-@media(min-width:1440px){
-  .container{
-    grid-template-columns:repeat(4,1fr);
+/* 表單與表格 */
+form {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  flex: 1 1 100%;
+  margin: 4px 0;
+}
+
+@media (min-width: 768px) {
+  .form-group {
+    flex: 1 1 45%;
+    margin: 4px 2.5%;
   }
 }
 
-/* FORM */
-input, select{
-  width:100%;
-  padding:8px;
-  margin:5px 0;
-  border-radius:10px;
-  border:1px solid #ccc;
+.form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: bold;
 }
 
-/* TABLE */
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-td,th{
-  border-bottom:1px solid #ddd;
-  padding:8px;
-  font-size:12px;
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
 }
 
-/* TITLE */
-h2{
-  margin-top:0;
+button.add-btn {
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: #444;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+table th,
+table td {
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+}
+
+table th {
+  background: rgba(0, 0, 0, 0.05);
 }

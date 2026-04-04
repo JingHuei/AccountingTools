@@ -1,76 +1,96 @@
 <!doctype html>
 <html lang="zh-Hant">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>可愛記帳本</title>
 
-    <!-- Google API -->
-    <script src="https://apis.google.com/js/api.js"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>記帳工具</title>
+  <!-- 載入 Google API 和身份驗證函式庫 -->
+  <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()" async defer></script>
+  <script src="https://accounts.google.com/gsi/client" onload="gisLoaded()" async defer></script>
+  <!-- 可選：Chart.js 圖表函式庫 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="app.js"></script>
+</head>
 
-    <link rel="stylesheet" href="styles.css" />
-    <script src="app.js"></script>
-  </head>
-
-  <body>
-    <div class="header">
-      <div>💰 我的記帳本</div>
-      <div>
-        <button onclick="handleAuth()">登入Google</button>
-        <button onclick="handleSignout()">登出</button>
+<body>
+  <!-- 登入/登出按鈕 -->
+  <div class="header">
+    <button id="auth-button">登入 Google</button>
+    <button id="signout-button" style="display: none">登出</button>
+  </div>
+  <div class="container">
+    <!-- 1. 新增記帳 -->
+    <div class="card" id="add-entry-card">
+      <h2>新增記帳</h2>
+      <form id="entry-form">
+        <div class="form-group">
+          <label for="date">日期</label>
+          <input type="date" id="date" required />
+        </div>
+        <div class="form-group">
+          <label for="type">類型</label>
+          <select id="type" required></select>
+        </div>
+        <div class="form-group">
+          <label for="category">分類</label>
+          <select id="category" required></select>
+        </div>
+        <div class="form-group">
+          <label for="payment">付款方式</label>
+          <select id="payment" required></select>
+        </div>
+        <div class="form-group">
+          <label for="amount">金額</label>
+          <input type="number" id="amount" required />
+        </div>
+        <div class="form-group" style="flex: 1 1 100%">
+          <label for="description">說明</label>
+          <textarea id="description" rows="2"></textarea>
+        </div>
+        <button type="button" class="add-btn" id="add-button">新增</button>
+      </form>
+    </div>
+    <!-- 2. 每月概要 -->
+    <div class="card" id="summary-card">
+      <h2>每月概要</h2>
+      <!-- 圖表區（例如：支出 vs 收入、分類圓餅圖等） -->
+      <canvas id="expenseChart" width="300" height="200"></canvas>
+      <canvas id="incomeChart" width="300" height="200"></canvas>
+      <!-- 月份篩選 -->
+      <div style="margin-top: 12px">
+        <label for="month-select">選擇月份：</label>
+        <input type="month" id="month-select" />
       </div>
     </div>
-
-    <div class="container">
-      <!-- 1 新增記帳 -->
-      <div class="card">
-        <h2>新增記帳</h2>
-
-        <input type="date" id="date" />
-
-        <select id="type"></select>
-        <select id="category"></select>
-        <select id="payment"></select>
-
-        <input type="number" id="amount" placeholder="金額" />
-        <input type="text" id="desc" placeholder="說明" />
-
-        <button onclick="addRecord()">新增</button>
-      </div>
-
-      <!-- 2 每月概要 -->
-      <div class="card">
-        <h2>每月概要</h2>
-        <canvas id="chart"></canvas>
-      </div>
-
-      <!-- 3 信用卡 -->
-      <div class="card">
-        <h2>信用卡統計</h2>
-        <ul id="cardList"></ul>
-      </div>
-
-      <!-- 4 明細 -->
-      <div class="card">
-        <h2>本月明細</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>日期</th>
-              <th>類型</th>
-              <th>付款</th>
-              <th>金額</th>
-              <th>分類</th>
-              <th>說明</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-      </div>
+    <!-- 3. 各銀行信用卡已刷金額 -->
+    <div class="card" id="credit-card">
+      <h2>信用卡累計消費</h2>
+      <!-- 可用列表或小圖表示 -->
+      <ul id="credit-list"></ul>
     </div>
-  </body>
+    <!-- 4. 本月明細 -->
+    <div class="card" id="details-card">
+      <h2>本月明細</h2>
+      <table id="records-table">
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th>類型</th>
+            <th>付款方式</th>
+            <th>金額</th>
+            <th>分類</th>
+            <th>說明</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</body>
+
+</html>
+
 </html>
