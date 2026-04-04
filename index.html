@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>可愛記帳本</title>
+
+    <!-- Google API -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js"></script>
+  </head>
+
+  <body>
+    <div class="header">
+      <div>💰 我的記帳本</div>
+      <div>
+        <button onclick="handleAuth()">登入Google</button>
+        <button onclick="handleSignout()">登出</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- 1 新增記帳 -->
+      <div class="card">
+        <h2>新增記帳</h2>
+
+        <input type="date" id="date" />
+
+        <select id="type"></select>
+        <select id="category"></select>
+        <select id="payment"></select>
+
+        <input type="number" id="amount" placeholder="金額" />
+        <input type="text" id="desc" placeholder="說明" />
+
+        <button onclick="addRecord()">新增</button>
+      </div>
+
+      <!-- 2 每月概要 -->
+      <div class="card">
+        <h2>每月概要</h2>
+        <canvas id="chart"></canvas>
+      </div>
+
+      <!-- 3 信用卡 -->
+      <div class="card">
+        <h2>信用卡統計</h2>
+        <ul id="cardList"></ul>
+      </div>
+
+      <!-- 4 明細 -->
+      <div class="card">
+        <h2>本月明細</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>日期</th>
+              <th>類型</th>
+              <th>付款</th>
+              <th>金額</th>
+              <th>分類</th>
+              <th>說明</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

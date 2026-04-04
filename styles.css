@@ -1,0 +1,81 @@
+:root{
+  --pink:#ffe4ec;
+  --blue:#e6f0ff;
+  --purple:#f3e6ff;
+  --yellow:#fff8d6;
+  --text:#333;
+}
+
+body{
+  margin:0;
+  font-family: "Noto Sans TC", sans-serif;
+  background: linear-gradient(135deg,var(--pink),var(--blue));
+}
+
+/* HEADER */
+.header{
+  display:flex;
+  justify-content:space-between;
+  padding:10px 20px;
+}
+
+button{
+  background:#333;
+  color:#fff;
+  border:none;
+  padding:8px 12px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* GRID */
+.container{
+  display:grid;
+  gap:15px;
+  padding:15px;
+}
+
+.card{
+  background:#fff;
+  border-radius:20px;
+  padding:15px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* MOBILE FIRST */
+@media(min-width:768px){
+  .container{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media(min-width:1440px){
+  .container{
+    grid-template-columns:repeat(4,1fr);
+  }
+}
+
+/* FORM */
+input, select{
+  width:100%;
+  padding:8px;
+  margin:5px 0;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+
+/* TABLE */
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+td,th{
+  border-bottom:1px solid #ddd;
+  padding:8px;
+  font-size:12px;
+}
+
+/* TITLE */
+h2{
+  margin-top:0;
+}
