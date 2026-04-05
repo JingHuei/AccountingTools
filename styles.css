@@ -525,12 +525,14 @@ select {
 }
 
 /* ✅ 偶數列淡底色 */
-.detail-table tbody tr:nth-child(even) {
+.detail-table tbody tr:nth-child(even),
+.mini-table tbody tr:nth-child(even) {
   background: rgb(255 228 225); /* 淡粉色 */
 }
 
 /* ✅ hover 動畫準備 */
-.detail-table tbody tr {
+.detail-table tbody tr,
+.mini-table tbody tr {
   transition: 
     background 0.25s ease,
     transform 0.18s ease,
@@ -538,13 +540,15 @@ select {
 }
 
 /* ✅ hover 效果（重點✨） */
-.detail-table tbody tr:hover {
+.detail-table tbody tr:hover,
+.mini-table tbody tr:hover {
   background-color: lightcyan;
   transform: translateY(-2px);
 }
 
 /* ✅ 讓整列 hover 更明顯（文字加深） */
-.detail-table tbody tr:hover td {
+.detail-table tbody tr:hover td,
+.mini-table tbody tr:hover td {
   color: #2d2234;
   font-weight: 600;
 }
