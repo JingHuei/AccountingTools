@@ -1,195 +1,225 @@
 <!doctype html>
 <html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>Lucy的記帳本</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="apple-touch-icon" href="favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon.ico" />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Lucy的記帳本</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <meta name="description" content="粉嫩可愛風 Google 試算表記帳工具" />
-  <link rel="stylesheet" href="styles.css" />
+    <meta name="description" content="粉嫩可愛風 Google 試算表記帳工具" />
+    <link rel="stylesheet" href="styles.css" />
 
-  <!-- Google Identity Services -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- App -->
-  <script defer src="app.js"></script>
+    <!-- App -->
+    <script defer src="app.js"></script>
+  </head>
 
-</head>
-
-<body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-badge"><img src="Logo.png" alt="記帳工具LOGO" class="logo"></div>
-        <div>
-          <h1>Lucy的記帳本</h1>
-        </div>
-      </div>
-
-      <div class="topbar-actions">
-        <span id="authState" class="auth-state">尚未登入</span>
-        <button id="loginBtn" class="btn btn-primary" type="button">登入 Google</button>
-        <button id="logoutBtn" class="btn btn-ghost" type="button" disabled>登出</button>
-      </div>
-    </header>
-
-    <main class="dashboard">
-      <section class="top-grid">
-        <!-- 新增記帳 -->
-        <article class="card card-add">
-          <div class="card-head">
-            <div>
-              <h2>新增記帳</h2>
-              <p>可直接寫入 Google 試算表</p>
-            </div>
-            <div id="addStatus" class="status-pill">待登入</div>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-badge">
+            <img src="Logo.png" alt="記帳工具LOGO" class="logo" />
           </div>
-
-          <form id="recordForm" class="form-grid" autocomplete="off">
-            <label>
-              日期
-              <input id="recordDate" type="date" required />
-            </label>
-
-            <label>
-              類型
-              <select id="recordType" required></select>
-            </label>
-
-            <label>
-              分類
-              <select id="recordCategory" required></select>
-            </label>
-
-            <label>
-              付款方式
-              <select id="recordPayment" required></select>
-            </label>
-
-            <label class="full">
-              金額
-              <input id="recordAmount" type="number" min="0" step="1" inputmode="numeric" placeholder="請輸入數字金額" required />
-            </label>
-
-            <label class="full">
-              說明
-              <textarea id="recordDescription" rows="3" placeholder="例如：1 月份房租、早餐店蛋餅大冰奶"></textarea>
-            </label>
-
-            <div class="full form-actions">
-              <button id="addRecordBtn" class="btn btn-primary btn-wide" type="submit">新增</button>
-            </div>
-          </form>
-        </article>
-
-        <div class="side-stack">
-          <!-- 每月概要 -->
-          <article class="card card-summary">
-            <div class="card-head">
-              <div>
-                <h2>每月概要</h2>
-                <p>收入、支出、剩餘預算與分類分布</p>
-              </div>
-
-              <label class="month-filter">
-                <span>月份</span>
-                <select id="monthFilter"></select>
-              </label>
-            </div>
-
-            <div class="kpi-grid">
-              <div class="kpi kpi-income">
-                <span>每月收入</span>
-                <strong id="incomeTotal">0</strong>
-              </div>
-              <div class="kpi kpi-expense">
-                <span>每月支出</span>
-                <strong id="expenseTotal">0</strong>
-              </div>
-              <div class="kpi kpi-remaining full">
-                <span>當月剩餘可花用預算</span>
-                <strong id="remainingTotal">0</strong>
-              </div>
-            </div>
-
-            <div class="chart-grid">
-              <div class="chart-card">
-                <h3>收入 / 支出</h3>
-                <canvas id="incomeExpenseChart" height="220"></canvas>
-              </div>
-              <div class="chart-card">
-                <h3>分類分布</h3>
-                <canvas id="categoryChart" height="220"></canvas>
-              </div>
-            </div>
-
-            <div class="category-list-wrap">
-              <h3>主要分類</h3>
-              <div id="categoryList" class="category-list"></div>
-            </div>
-          </article>
-
-          <!-- 各銀行信用卡已刷金額 -->
-          <article class="card card-credit">
-            <div class="card-head">
-              <div>
-                <h2>各銀行信用卡已刷金額</h2>
-                <p>依付款方式統計信用卡累積金額</p>
-              </div>
-            </div>
-
-            <div class="table-wrap compact">
-              <table class="mini-table">
-                <thead>
-                  <tr>
-                    <th>銀行 / 付款方式</th>
-                    <th>累積刷卡金額</th>
-                  </tr>
-                </thead>
-                <tbody id="paymentSummaryBody">
-                  <tr><td colspan="2" class="empty-row">登入後自動載入</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <!-- 本月明細 -->
-      <section class="card card-detail">
-        <div class="card-head detail-head">
           <div>
-            <h2>本月明細</h2>
-            <p>可切換月份檢視記帳內容</p>
+            <h1>Lucy的記帳本</h1>
           </div>
-          <div id="detailMeta" class="status-pill">尚未載入</div>
         </div>
 
-        <div class="table-wrap">
-          <table class="detail-table">
-            <thead>
-              <tr>
-                <th>日期</th>
-                <th>類型</th>
-                <th>付款方式</th>
-                <th>金額</th>
-                <th>分類</th>
-                <th>說明</th>
-              </tr>
-            </thead>
-            <tbody id="detailBody">
-              <tr>
-                <td colspan="6" class="empty-row">登入後可查看本月明細</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="topbar-actions">
+          <span id="authState" class="auth-state">尚未登入</span>
+          <button id="loginBtn" class="btn btn-primary" type="button">
+            登入 Google
+          </button>
+          <button id="logoutBtn" class="btn btn-ghost" type="button" disabled>
+            登出
+          </button>
         </div>
-      </section>
-    </main>
-  </div>
-</body>
+      </header>
+
+      <main class="dashboard">
+        <section class="top-grid">
+          <!-- 新增記帳 -->
+          <article class="card card-add">
+            <div class="card-head">
+              <div>
+                <h2>新增記帳</h2>
+                <p>可直接寫入 Google 試算表</p>
+              </div>
+              <div id="addStatus" class="status-pill">待登入</div>
+            </div>
+
+            <form id="recordForm" class="form-grid" autocomplete="off">
+              <label>
+                日期
+                <input id="recordDate" type="date" required />
+              </label>
+
+              <label>
+                類型
+                <select id="recordType" required></select>
+              </label>
+
+              <label>
+                分類
+                <select id="recordCategory" required></select>
+              </label>
+
+              <label>
+                付款方式
+                <select id="recordPayment" required></select>
+              </label>
+
+              <label class="full">
+                金額
+                <input
+                  id="recordAmount"
+                  type="number"
+                  min="0"
+                  step="1"
+                  inputmode="numeric"
+                  placeholder="請輸入數字金額"
+                  required
+                />
+              </label>
+
+              <label class="full">
+                說明
+                <textarea
+                  id="recordDescription"
+                  rows="3"
+                  placeholder="例如：1 月份房租、早餐店蛋餅大冰奶"
+                ></textarea>
+              </label>
+
+              <div class="full form-actions">
+                <button
+                  id="addRecordBtn"
+                  class="btn btn-primary btn-wide"
+                  type="submit"
+                >
+                  新增
+                </button>
+              </div>
+            </form>
+          </article>
+
+          <div class="side-stack">
+            <!-- 每月概要 -->
+            <article class="card card-summary">
+              <div class="card-head">
+                <div>
+                  <h2>每月概要</h2>
+                  <p>收入、支出、剩餘預算與分類分布</p>
+                </div>
+
+                <label class="month-filter">
+                  <span>月份</span>
+                  <select id="monthFilter"></select>
+                </label>
+              </div>
+
+              <div class="kpi-grid">
+                <div class="kpi kpi-income">
+                  <span>每月收入</span>
+                  <strong id="incomeTotal">0</strong>
+                </div>
+                <div class="kpi kpi-expense">
+                  <span>每月支出</span>
+                  <strong id="expenseTotal">0</strong>
+                </div>
+                <div class="kpi kpi-remaining full">
+                  <span>當月剩餘可花用預算</span>
+                  <strong id="remainingTotal">0</strong>
+                </div>
+              </div>
+
+              <div class="chart-grid">
+                <div class="chart-card">
+                  <h3>收入 / 支出</h3>
+                  <canvas id="incomeExpenseChart" height="220"></canvas>
+                </div>
+                <div class="chart-card">
+                  <h3>分類分布</h3>
+                  <canvas id="categoryChart" height="220"></canvas>
+                </div>
+              </div>
+
+              <div class="category-list-wrap">
+                <h3>主要分類</h3>
+                <div id="categoryList" class="category-list"></div>
+              </div>
+            </article>
+
+            <!-- 各銀行信用卡已刷金額 -->
+            <article class="card card-credit">
+              <div class="card-head">
+                <div>
+                  <h2>各銀行信用卡已刷金額</h2>
+                  <p>依付款方式統計信用卡累積金額</p>
+                </div>
+              </div>
+
+              <div class="table-wrap compact">
+                <table class="mini-table">
+                  <thead>
+                    <tr>
+                      <th>銀行 / 付款方式</th>
+                      <th>累積刷卡金額</th>
+                    </tr>
+                  </thead>
+                  <tbody id="paymentSummaryBody">
+                    <tr>
+                      <td colspan="2" class="empty-row">登入後自動載入</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- 本月明細 -->
+        <section class="card card-detail">
+          <div class="card-head detail-head">
+            <div>
+              <h2>本月明細</h2>
+              <p>可切換月份檢視記帳內容</p>
+            </div>
+            <div id="detailMeta" class="status-pill">尚未載入</div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="detail-table">
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th>類型</th>
+                  <th>付款方式</th>
+                  <th>金額</th>
+                  <th>分類</th>
+                  <th>說明</th>
+                </tr>
+              </thead>
+              <tbody id="detailBody">
+                <tr>
+                  <td colspan="6" class="empty-row">登入後可查看本月明細</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
 </html>
